@@ -160,7 +160,7 @@ const Footer = () => {
                         </Typography>
                     </Grid>
 
-                    <Grid size={{ size: 12, md: "auto" }} sx={{ display: "flex", justifyContent: "center", mb: { xs: 1, md: 0 } }}>
+                    <Grid size={{ size: 12, md: "auto" }} >
                         <Box sx={{ display: "flex", gap: 1 }}>
                             <IconButton
                                 component="a"
