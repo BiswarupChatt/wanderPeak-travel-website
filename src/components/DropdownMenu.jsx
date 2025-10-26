@@ -1,12 +1,12 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, createContext, useContext } from "react";
 import { Link } from "react-router-dom";
 
 // MUI
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Popper from "@mui/material/Popper";
 import Grow from "@mui/material/Grow";
+import Paper from "@mui/material/Paper";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
@@ -22,12 +22,25 @@ import Typography from "@mui/material/Typography";
  * />
  */
 
+// Placement context — scoped per DropdownMenu instance so each root menu can lock independently
+const PlacementContext = createContext({
+  placementLock: null,
+  setPlacementLock: () => {}
+});
+
 const DropdownMenu = ({ menuButton, items, customWidth = 200 }) => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
 
+  // placement lock for this root dropdown (null = not decided yet)
+  const [placementLock, setPlacementLock] = useState(null);
+
   const toggleOpen = () => setOpen((prev) => !prev);
-  const closeMenu = useCallback(() => setOpen(false), []);
+  const closeMenu = useCallback(() => {
+    setOpen(false);
+    // reset lock when the root menu closes
+    setPlacementLock(null);
+  }, []);
 
   // Close on Esc
   useEffect(() => {
@@ -37,48 +50,57 @@ const DropdownMenu = ({ menuButton, items, customWidth = 200 }) => {
   }, [open]);
 
   return (
-    <Box ref={anchorRef} sx={{ position: "relative", display: "inline-block", overflow: "visible" }}>
-      <Box onClick={toggleOpen} sx={{ cursor: "pointer" }}>
-        {typeof menuButton === "function" ? menuButton(open) : menuButton}
-      </Box>
+    <PlacementContext.Provider value={{ placementLock, setPlacementLock }}>
+      <Box ref={anchorRef} sx={{ position: "relative", display: "inline-block", overflow: "visible" }}>
+        <Box onClick={toggleOpen} sx={{ cursor: "pointer" }}>
+          {typeof menuButton === "function" ? menuButton(open) : menuButton}
+        </Box>
 
-      <Popper
-        open={open}
-        anchorEl={anchorRef.current}
-        placement="bottom-start"
-        transition
-        style={{ zIndex: 1300 }}
-      >
-        {({ TransitionProps }) => (
-          <Grow {...TransitionProps} style={{ transformOrigin: "top left" }}>
-            <Paper
-              elevation={3}
-              sx={{
-                width: customWidth,
-                bgcolor: "background.paper",
-                borderRadius: 1,
-              }}
-            >
-              <ClickAwayListener onClickAway={closeMenu}>
-                <List sx={{ py: 0.5 }}>
-                  {items.map((item, idx) => (
-                    <DropdownMenuItem key={idx} item={item} closeRootMenu={closeMenu} />
-                  ))}
-                </List>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-      </Popper>
-    </Box>
+        <Popper
+          open={open}
+          anchorEl={anchorRef.current}
+          placement="bottom-start"
+          transition
+          style={{ zIndex: 1300 }}
+          modifiers={[
+            { name: "flip", options: { fallbackPlacements: ["bottom-end", "top-start", "top-end"] } },
+            { name: "preventOverflow", options: { padding: 8 } }
+          ]}
+        >
+          {({ TransitionProps }) => (
+            <Grow {...TransitionProps} style={{ transformOrigin: "top left" }}>
+              <Paper
+                elevation={3}
+                sx={{
+                  width: customWidth,
+                  bgcolor: "background.paper",
+                  borderRadius: 1
+                }}
+              >
+                <ClickAwayListener onClickAway={closeMenu}>
+                  <List sx={{ py: 0.5 }}>
+                    {items.map((item, idx) => (
+                      <DropdownMenuItem key={idx} item={item} closeRootMenu={closeMenu} />
+                    ))}
+                  </List>
+                </ClickAwayListener>
+              </Paper>
+            </Grow>
+          )}
+        </Popper>
+      </Box>
+    </PlacementContext.Provider>
   );
 };
 
 const DropdownMenuItem = ({ item, closeRootMenu }) => {
   const [subOpen, setSubOpen] = useState(false);
-  const [placement, setPlacement] = useState("right-start"); // or "left-start"
+  const [placement, setPlacement] = useState("right-start"); // local placement to control Popper
   const itemRef = useRef(null);
   const subAnchorRef = useRef(null);
+
+  // consume per-root placement lock
+  const { placementLock, setPlacementLock } = useContext(PlacementContext);
 
   const hasChildren = Array.isArray(item.children) && item.children.length > 0;
   const Icon = item.icon;
@@ -86,27 +108,46 @@ const DropdownMenuItem = ({ item, closeRootMenu }) => {
   const decidePlacement = () => {
     const rect = itemRef.current?.getBoundingClientRect();
     if (!rect) return "right-start";
-    const submenuWidth = 192; // similar to w-48 in original
+    const submenuWidth = 192; // width of child popper
     const viewportWidth = window.innerWidth;
     const preferLeft = rect.right + submenuWidth > viewportWidth - 20;
     return preferLeft ? "left-start" : "right-start";
   };
 
   const toggleSubmenu = (e) => {
-    e.stopPropagation();
+    e && e.stopPropagation();
     if (!hasChildren) return;
     const next = !subOpen;
-    if (next) setPlacement(decidePlacement());
+    if (next) {
+      // if a placement lock exists for this root, use it
+      if (placementLock) {
+        setPlacement(placementLock);
+      } else {
+        // decide placement and set lock so all siblings and deeper children follow same side
+        const decided = decidePlacement();
+        setPlacement(decided);
+        // only set the root-level lock if not set yet
+        if (!placementLock) setPlacementLock(decided);
+      }
+    }
     setSubOpen(next);
   };
 
   const handleClick = (e) => {
+    e && e.stopPropagation();
     if (hasChildren) {
       toggleSubmenu(e);
       return;
     }
-    if (item.action) item.action();
-    if (item.path) closeRootMenu();
+    if (item.action) {
+      item.action();
+      closeRootMenu();
+      return;
+    }
+    if (item.path) {
+      // If using Link you might wrap ListItemButton in Link — simplified here:
+      closeRootMenu();
+    }
   };
 
   // Close submenu on Esc
@@ -127,7 +168,7 @@ const DropdownMenuItem = ({ item, closeRootMenu }) => {
         px: 2,
         py: 1,
         borderRadius: 0.75,
-        "&:hover": { bgcolor: "action.hover" },
+        "&:hover": { bgcolor: "action.hover" }
       }}
     >
       {Icon && (
@@ -167,11 +208,13 @@ const DropdownMenuItem = ({ item, closeRootMenu }) => {
         <Popper
           open={subOpen}
           anchorEl={subAnchorRef.current}
-          placement={placement}
+          placement={placement} // uses locked placement when present
           transition
           style={{ zIndex: 1400 }}
           modifiers={[
-            { name: "offset", options: { offset: [0, 0] } }, // snug to the parent
+            { name: "flip", options: { fallbackPlacements: ["left-start", "right-start"] } },
+            { name: "preventOverflow", options: { padding: 8 } },
+            { name: "offset", options: { offset: [0, 0] } }
           ]}
         >
           {({ TransitionProps }) => (
@@ -185,7 +228,7 @@ const DropdownMenuItem = ({ item, closeRootMenu }) => {
                   width: 192,
                   bgcolor: "background.paper",
                   borderRadius: 1,
-                  py: 0.5,
+                  py: 0.5
                 }}
               >
                 <ClickAwayListener onClickAway={() => setSubOpen(false)}>
