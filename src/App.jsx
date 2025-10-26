@@ -1,16 +1,10 @@
 // src/App.jsx
 import { Button, Typography, Container } from '@mui/material';
-
+import theme from './theme/theme';
+import AppRoutes from './routes/AppRoute';
 function App() {
   return (
-    <Container sx={{ textAlign: 'center', mt: 5 }}>
-      <Typography variant="h4" gutterBottom>
-        Welcome to MUI + Vite + React 🚀
-      </Typography>
-      <Button variant="contained" color="primary">
-        Get Started
-      </Button>
-    </Container>
+    <AppRoutes />
   );
 }
 
