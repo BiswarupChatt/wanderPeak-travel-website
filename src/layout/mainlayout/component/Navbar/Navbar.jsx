@@ -18,7 +18,7 @@ import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import { useTheme } from "@mui/material/styles";
+import { useTheme, alpha } from "@mui/material/styles";
 
 const MobileNavItem = ({ item, depth = 0, onNavigate }) => {
   const [open, setOpen] = useState(false);
@@ -83,101 +83,121 @@ const Navbar = () => {
   const closeDrawer = () => setDrawerOpen(false);
 
   return (
-    <AppBar
-      position="static"
-      elevation={2}
-      sx={{
-        bgcolor: "background.paper",
-        color: "text.primary",
-        boxShadow: (t) => t.shadows[0],
-        height: 64,
-      }}
-    >
-      <Toolbar
+    <>
+      <AppBar
+        position="fixed"
+        elevation={0}
         sx={{
-          display: "flex",
-          alignItems: "center",
-          px: 2.5,
-          height: "100%",
-          gap: 2,
+          // centered floating bar
+          top: 16,
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "min(1100px, calc(100% - 48px))",
+          borderRadius: 2,
+          bgcolor: (t) => alpha(t.palette.background.paper, 0.72),
+          backdropFilter: "blur(8px)",
+        //   boxShadow: (t) => t.shadows[8],
+          zIndex: (t) => t.zIndex.appBar + 10,
+          // responsive: full width / flush at very small screens
+          [theme.breakpoints.down("sm")]: {
+            left: 0,
+            transform: "none",
+            width: "100%",
+            top: 0,
+            borderRadius: 0,
+            bgcolor: (t) => alpha(t.palette.background.paper, 0.92),
+          },
         }}
       >
-        {/* Logo / Left */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography
-            component={Link}
-            to="/"
-            variant="h6"
-            sx={{
-              textDecoration: "none",
-              color: "text.primary",
-              fontWeight: 600,
-              "&:hover": { textDecoration: "none" },
-            }}
-          >
-            WanderPeak
-          </Typography>
-        </Box>
-
-        {/* Spacer */}
-        <Box sx={{ flex: 1 }} />
-
-        {/* Desktop items (right) */}
-        {!isMobile && (
-          <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
-            {NAVBAR_ITEMS.map((item) => (
-              <NavItem key={item.name} item={item} />
-            ))}
-          </Box>
-        )}
-
-        {/* Mobile hamburger */}
-        {isMobile && (
-          <IconButton
-            edge="end"
-            color="inherit"
-            aria-label="open menu"
-            onClick={() => setDrawerOpen(true)}
-            size="large"
-          >
-            <MenuIcon />
-          </IconButton>
-        )}
-
-        {/* Mobile Drawer */}
-        <Drawer anchor="right" open={drawerOpen} onClose={closeDrawer}>
-          <Box sx={{ width: 320, maxWidth: "100vw" }}>
-            <Box
+        <Toolbar
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            px: { xs: 1.5, sm: 2.5 },
+            height: 64,
+            gap: 2,
+          }}
+        >
+          {/* Logo / Left */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography
+              component={Link}
+              to="/"
+              variant="h6"
               sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                px: 2,
-                py: 1.25,
+                textDecoration: "none",
+                color: "text.primary",
+                fontWeight: 700,
+                "&:hover": { textDecoration: "none" },
               }}
             >
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                Menu
-              </Typography>
-              <IconButton onClick={closeDrawer} size="large" aria-label="close menu">
-                <CloseIcon />
-              </IconButton>
-            </Box>
-            <Divider />
-
-            <List>
-              {NAVBAR_ITEMS.map((item) => (
-                <MobileNavItem
-                  key={item.name}
-                  item={item}
-                  onNavigate={closeDrawer}
-                />
-              ))}
-            </List>
+              WanderPeak
+            </Typography>
           </Box>
-        </Drawer>
-      </Toolbar>
-    </AppBar>
+
+          {/* Spacer */}
+          <Box sx={{ flex: 1 }} />
+
+          {/* Desktop items (right) */}
+          {!isMobile && (
+            <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
+              {NAVBAR_ITEMS.map((item) => (
+                <NavItem key={item.name} item={item} />
+              ))}
+            </Box>
+          )}
+
+          {/* Mobile hamburger */}
+          {isMobile && (
+            <IconButton
+              edge="end"
+              color="inherit"
+              aria-label="open menu"
+              onClick={() => setDrawerOpen(true)}
+              size="large"
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
+        </Toolbar>
+      </AppBar>
+
+      {/* Spacer to avoid content being hidden under fixed navbar */}
+      <Box sx={{ height: { xs: 56, sm: 72 } }} />
+
+      {/* Mobile Drawer */}
+      <Drawer anchor="right" open={drawerOpen} onClose={closeDrawer}>
+        <Box sx={{ width: 320, maxWidth: "100vw" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              px: 2,
+              py: 1.25,
+            }}
+          >
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              Menu
+            </Typography>
+            <IconButton onClick={closeDrawer} size="large" aria-label="close menu">
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Divider />
+
+          <List>
+            {NAVBAR_ITEMS.map((item) => (
+              <MobileNavItem
+                key={item.name}
+                item={item}
+                onNavigate={closeDrawer}
+              />
+            ))}
+          </List>
+        </Box>
+      </Drawer>
+    </>
   );
 };
 
