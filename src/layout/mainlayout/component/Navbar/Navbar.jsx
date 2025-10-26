@@ -20,6 +20,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import { useTheme, alpha } from "@mui/material/styles";
 
+import logo from "../../../../assets/logo.png";
+
 const MobileNavItem = ({ item, depth = 0, onNavigate }) => {
   const [open, setOpen] = useState(false);
   const hasChildren = Array.isArray(item.children) && item.children.length > 0;
@@ -86,26 +88,21 @@ const Navbar = () => {
     <>
       <AppBar
         position="fixed"
-        elevation={0}
+        elevation={3}
         sx={{
-          // centered floating bar
+          // centered floating bar (kept for mobile so mobile looks like desktop)
           top: 16,
           left: "50%",
           transform: "translateX(-50%)",
           width: "min(1100px, calc(100% - 48px))",
           borderRadius: 2,
-          bgcolor: (t) => alpha(t.palette.background.paper, 0.72),
-          backdropFilter: "blur(8px)",
-        //   boxShadow: (t) => t.shadows[8],
+          bgcolor: (t) => alpha(t.palette.background.paper, 0.6),
+          backdropFilter: "blur(3px)",
           zIndex: (t) => t.zIndex.appBar + 10,
-          // responsive: full width / flush at very small screens
-          [theme.breakpoints.down("sm")]: {
-            left: 0,
-            transform: "none",
-            width: "100%",
-            top: 0,
-            borderRadius: 0,
-            bgcolor: (t) => alpha(t.palette.background.paper, 0.92),
+          // tiny screens adjust slightly but keep floating appearance
+          [theme.breakpoints.down("xs")]: {
+            top: 8,
+            width: "min(920px, calc(100% - 24px))",
           },
         }}
       >
@@ -120,19 +117,13 @@ const Navbar = () => {
         >
           {/* Logo / Left */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Typography
-              component={Link}
-              to="/"
-              variant="h6"
-              sx={{
-                textDecoration: "none",
-                color: "text.primary",
-                fontWeight: 700,
-                "&:hover": { textDecoration: "none" },
-              }}
-            >
-              WanderPeak
-            </Typography>
+            <Box>
+              <img
+                src={logo}
+                alt="WanderPeak Logo"
+                style={{ height: 40, width: "auto", display: "block" }}
+              />
+            </Box>
           </Box>
 
           {/* Spacer */}
@@ -147,14 +138,19 @@ const Navbar = () => {
             </Box>
           )}
 
-          {/* Mobile hamburger */}
+          {/* Mobile hamburger (looks like desktop) */}
           {isMobile && (
             <IconButton
               edge="end"
-              color="inherit"
               aria-label="open menu"
               onClick={() => setDrawerOpen(true)}
               size="large"
+              sx={{
+                // explicitly make hamburger black regardless of theme
+                color: "#000",
+                background: "transparent",
+                "&:hover": { background: alpha(theme.palette.action.hover, 0.08) },
+              }}
             >
               <MenuIcon />
             </IconButton>
@@ -163,7 +159,7 @@ const Navbar = () => {
       </AppBar>
 
       {/* Spacer to avoid content being hidden under fixed navbar */}
-      <Box sx={{ height: { xs: 56, sm: 72 } }} />
+      <Box sx={{ height: { xs: 64, sm: 72 } }} />
 
       {/* Mobile Drawer */}
       <Drawer anchor="right" open={drawerOpen} onClose={closeDrawer}>
@@ -180,7 +176,7 @@ const Navbar = () => {
             <Typography variant="h6" sx={{ fontWeight: 600 }}>
               Menu
             </Typography>
-            <IconButton onClick={closeDrawer} size="large" aria-label="close menu">
+            <IconButton onClick={closeDrawer} size="large" aria-label="close menu" sx={{ color: "#000" }}>
               <CloseIcon />
             </IconButton>
           </Box>

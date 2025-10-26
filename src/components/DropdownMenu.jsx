@@ -12,6 +12,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
+import { alpha } from "@mui/material/styles";
 
 /**
  * Public API:
@@ -73,8 +74,9 @@ const DropdownMenu = ({ menuButton, items, customWidth = 200 }) => {
                 elevation={3}
                 sx={{
                   width: customWidth,
-                  bgcolor: "background.paper",
-                  borderRadius: 1
+                  bgcolor: (t) => alpha(t.palette.background.paper, 0.6),
+                  backdropFilter: "blur(3px)",
+                  borderRadius: 1,
                 }}
               >
                 <ClickAwayListener onClickAway={closeMenu}>
@@ -208,7 +210,7 @@ const DropdownMenuItem = ({ item, closeRootMenu }) => {
         <Popper
           open={subOpen}
           anchorEl={subAnchorRef.current}
-          placement={placement} // uses locked placement when present
+          placement={placement}
           transition
           style={{ zIndex: 1400 }}
           modifiers={[
@@ -226,7 +228,8 @@ const DropdownMenuItem = ({ item, closeRootMenu }) => {
                 elevation={6}
                 sx={{
                   width: 192,
-                  bgcolor: "background.paper",
+                  bgcolor: (t) => alpha(t.palette.background.paper, 0.6),
+                  backdropFilter: "blur(3px)",
                   borderRadius: 1,
                   py: 0.5
                 }}
