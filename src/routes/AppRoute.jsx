@@ -4,6 +4,7 @@ import AuthLayout from '../layout/authLayout/AuthLayout';
 import Home from '../pages/home/Home';
 import About from '../pages/about/About';
 import Login from '../pages/login/Login';
+import NotFound from '../pages/NotFound';
 
 export default function AppRoutes() {
     const routes = useRoutes([
@@ -13,6 +14,7 @@ export default function AppRoutes() {
             children: [
                 { path: '', element: <Home /> },
                 { path: 'about', element: <About /> },
+                {path: '*', element: <NotFound />}
             ],
         },
         {
