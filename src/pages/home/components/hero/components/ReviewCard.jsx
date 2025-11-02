@@ -7,13 +7,14 @@ const ReviewCard = ({ review }) => {
             sx={{
                 background: "rgba(255, 255, 255, 0.08)",
                 borderRadius: "16px",
-                p: 3,
+                p: 2,
                 color: "#fff",
                 backdropFilter: "blur(8px)",
                 boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
                 display: "flex",
+                height: "100%",
                 flexDirection: "column",
-                gap: 1.5,
+                gap: 1,
                 transition: "all 0.3s ease",
                 "&:hover": {
                     transform: "translateY(-4px)",
