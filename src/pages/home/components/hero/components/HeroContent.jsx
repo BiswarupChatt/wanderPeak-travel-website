@@ -2,38 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Typography, Box, InputBase, Button } from "@mui/material";
 import theme from "../../../../../theme/theme";
 import SearchIcon from "@mui/icons-material/Search";
+import { useTypingEffect } from "../../../../../components/TypeWriterEffect";
 
 
 const HeroContent = () => {
-    const places = ["Bhutan", "Meghalaya", "Goa", "Sikkim"];
-    const [currentPlace, setCurrentPlace] = useState("");
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [isTyping, setIsTyping] = useState(true);
-
-    // Typing animation logic
-    useEffect(() => {
-        const currentWord = places[currentIndex];
-        if (isTyping) {
-            if (currentPlace !== currentWord) {
-                const timeoutId = setTimeout(() => {
-                    setCurrentPlace(currentWord.slice(0, currentPlace.length + 1));
-                }, 150);
-                return () => clearTimeout(timeoutId);
-            } else {
-                setTimeout(() => setIsTyping(false), 1000);
-            }
-        } else {
-            if (currentPlace === "") {
-                setCurrentIndex((prevIndex) => (prevIndex + 1) % places.length);
-                setIsTyping(true);
-            } else {
-                const timeoutId = setTimeout(() => {
-                    setCurrentPlace(currentPlace.slice(0, currentPlace.length - 1));
-                }, 100);
-                return () => clearTimeout(timeoutId);
-            }
-        }
-    }, [currentPlace, currentIndex, isTyping]);
+    const destinations = ["Bhutan", "Meghalaya", "Cherrapunji", "Sikkim"];
+    const currentPlace = useTypingEffect(destinations); 
 
     return (
         <Box
