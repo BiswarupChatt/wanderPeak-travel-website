@@ -34,6 +34,7 @@ import PanelInbound from "./components/PanelInbound";
 import PanelIcons from "./components/PanelIcons";
 import PanelCards from "./components/PanelCards";
 import PanelMegaRegions from "./components/PanelMegaRegions";
+import { useTypingEffect } from "../../../../components/TypeWriterEffect";
 
 /* ==================== THEME TOKENS ==================== */
 const NAV = {
@@ -63,8 +64,8 @@ function PhonePill({ number = "1800 313 5555" }) {
                 // layout
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 1,                      
-                height: 30,                  
+                gap: 1,
+                height: 30,
                 // px: 1.25,                   
                 borderRadius: 9999,
 
@@ -136,6 +137,10 @@ function SignInIcon({ label = "Sign In" }) {
 }
 
 function SearchBar() {
+    const destinations = ["Meghalaya", "Bhutan", "Sikkim", "Cherrapunji"];
+    const currentPlace = useTypingEffect(destinations);
+
+
     return (
         <Box
             sx={{
@@ -157,7 +162,7 @@ function SearchBar() {
                 borderRadius: "50%",
             }} />
             <InputBase
-                placeholder='Search "Europe"'
+                placeholder={`Search ${currentPlace}`}
                 fullWidth
                 sx={{
                     fontSize: 14,
