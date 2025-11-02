@@ -12,7 +12,6 @@ const ReviewCard = ({ review }) => {
                 backdropFilter: "blur(8px)",
                 boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
                 display: "flex",
-                height: "100%",
                 flexDirection: "column",
                 gap: 1,
                 transition: "all 0.3s ease",
