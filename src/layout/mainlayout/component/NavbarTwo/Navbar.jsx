@@ -17,11 +17,9 @@ import {
     useMediaQuery,
     Stack,
     Divider,
-    Paper,
     Popper,
     Fade,
     ClickAwayListener,
-    Chip,
 } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
@@ -32,155 +30,12 @@ import PhoneInTalkOutlinedIcon from "@mui/icons-material/PhoneInTalkOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import KeyboardVoiceOutlinedIcon from "@mui/icons-material/KeyboardVoiceOutlined";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
-import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 
-/* -------------------------------------------------------
-   THEME HINT (optional): set these in your theme override
-   primary.main:   "#0E2231"  // top bar
-   secondary.main: "#0F2A3A"  // secondary bar
---------------------------------------------------------*/
-
-/* -------------------- NAV DATA -------------------- */
-/**
- * layout:
- *  - "megaRegions"  -> India/World (top links + left rail + right columns)
- *  - "cards"        -> Speciality Tours (card grid + bands + footer links)
- *  - "icons"        -> Customized Holidays (left icons list + right image cards)
- *  - "inbound"      -> Inbound (banner + left cards + right list with divider)
- *  - "simple"       -> Plain link (Corporate, Forex, Gift Cards, Contact)
- *
- * NOTE: image boxes are grey placeholders; replace later.
- */
-const navData = [
-    {
-        title: "India",
-        layout: "megaRegions",
-        topLinks: [
-            "Top Recommended Destinations",
-            "Rajasthan",
-            "Kerala",
-            "Andaman and Nicobar",
-            "North East",
-            "Gujarat",
-        ],
-        leftRail: [
-            "North India",
-            "South India",
-            "East & North East India",
-            "Rajasthan, West & Central India",
-        ],
-        columns: [
-            { heading: "Delhi", items: ["Chandrataal", "Dalhousie", "Dharamshala", "Kaza", "Manali", "Shimla", "Spiti Valley"] },
-            { heading: "Leh-Ladakh", items: ["Kargil", "Leh", "Nubra Valley", "Pangong Tso", "Turtuk"] },
-            { heading: "Amritsar", items: [] },
-            { heading: "Chandigarh", items: [] },
-            { heading: "Punjab & Haryana", items: ["Kurukshetra", "Panipat"] },
-            { heading: "Uttarakhand", items: ["Jim Corbett Park", "Haridwar", "Mussoorie", "Nainital", "Rishikesh", "Chardham Yatra"] },
-            { heading: "Uttar Pradesh", items: ["Agra", "Ayodhya", "Fatehpur Sikri", "Jhansi", "Lucknow", "Mathura", "Prayagraj", "Sarnath", "Varanasi", "Vrindavan"] },
-        ],
-    },
-    {
-        title: "World",
-        layout: "megaRegions",
-        topLinks: [
-            "Top Recommended Destinations",
-            "America",
-            "Europe",
-            "South East Asia",
-            "Australia New Zealand",
-            "Africa",
-            "Japan China Korea Taiwan",
-        ],
-        leftRail: ["Africa", "America", "Asia", "Australia & New Zealand", "Europe", "Middle East", "Antarctica"],
-        columns: [
-            { heading: "Egypt", items: ["Alexandria", "Aswan", "Cairo", "Hurghada", "Luxor", "Nile Cruise"] },
-            { heading: "Kenya", items: ["Masai Mara"] },
-            { heading: "Mauritius", items: ["Port Louis"] },
-            { heading: "Seychelles", items: [] },
-            { heading: "South Africa", items: ["Cape Town", "George", "Johannesburg", "Knysna", "Mossel Bay", "Outdshoorn", "Pilanesberg National Park", "Port Elizabeth (Gqeberha)", "Stellenbosch", "Sun City"] },
-            { heading: "Tanzania", items: [] },
-            { heading: "Zimbabwe", items: ["Victoria Falls"] },
-        ],
-    },
-    {
-        title: "Speciality Tours",
-        layout: "cards",
-        bestselling: [
-            { title: "Women's Special", sub: "104 Departures", img: "" },
-            { title: "Seniors' Special", sub: "74 Departures", img: "" },
-            { title: "Family Tour Packages", sub: "1080 Departures", img: "" },
-            { title: "Honeymoon Special", sub: "27 Departures", img: "" },
-        ],
-        somethingNew: [
-            { title: "Couples Only", sub: "(2 Departures)" },
-            { title: "Luxury Group Tours", sub: "(2 Departures)" },
-            { title: "Post Tour Holidays", sub: "" },
-            { title: "Road Trips", sub: "(3 Departures)" },
-            { title: "Short Trips", sub: "(78 Departures)" },
-            { title: "YOLO Outdoors", sub: "(6 Departures)" },
-        ],
-        newlyLaunched: [
-            { title: "Women's Special with Kids", sub: "(4 Departures)" },
-            { title: "Women's Special Shopping and Food Tours", sub: "" },
-            { title: "Women's Special Spiritual Tours", sub: "(2 Departures)" },
-            { title: "Grandparents and Grandchildren Special Tours", sub: "(4 Departures)" },
-        ],
-        footerLinks: [
-            "One Week One Place",
-            "Treks & Hikes",
-            "City Walks & Day Trips",
-            "Students' Special",
-            "Women's Special YOLO Tours",
-        ],
-    },
-    {
-        title: "Customized Holidays",
-        layout: "icons",
-        leftList: [
-            { title: "Family Fun" },
-            { title: "Romantic Holidays" },
-            { title: "Getaways" },
-            { title: "Hidden Gems", badge: "Newly Launched" },
-            { title: "Self Drive Holidays" },
-            { title: "Air Inclusive Holidays" },
-            { title: "Cruise Holidays" },
-        ],
-        rightCards: [
-            { title: "Luxury Holidays", sub: "choose the right tailor-made luxury travel vacations", img: "" },
-            { title: "Island Getaways", sub: "explore the tropical island getaways", img: "" },
-        ],
-    },
-    {
-        title: "Corporate Travel",
-        layout: "simple",
-    },
-    {
-        title: "Inbound",
-        layout: "inbound",
-        banner: "Tailor-made Indian journeys for NRIs and foreign guests seeking culture and spirituality. Explore Now",
-        leftCards: [
-            { title: "Rajasthan Royale", sub: "Beyond The Forts", img: "" },
-            { title: "Rajasthan", sub: "Roars & Royals", img: "" },
-            { title: "Golden Grandeur", sub: "The Triangle of Royalty", img: "" },
-            { title: "Udaipur", sub: "The Triangle of Royalty", img: "" },
-        ],
-        rightListA: [
-            { title: "India Royale", sub: "Roots & Routes", img: "" },
-            { title: "Sacred Trails", sub: "Ayodhya Prayagraj Varanasi", img: "" },
-            { title: "On Buddha’s Trail", sub: "A pilgrimage route", img: "" },
-            { title: "The Himalayan Kingdom", sub: "Mountain Range of Asia", img: "" },
-        ],
-        rightListB: [
-            { title: "Maharaja’s Express", sub: "The Indian Panorama", img: "" },
-            { title: "Blissful Bhutan", sub: "Nature, Nirvana, Monks", img: "" },
-            { title: "Nepal", sub: "Mountain Lakes & Wildlife", img: "" },
-            { title: "Sri Lanka", sub: "Sacred Sites to Sandy Shores", img: "" },
-        ],
-    },
-    { title: "Forex", layout: "simple" },
-    { title: "Gift Cards", layout: "simple" },
-    { title: "Contact Us", layout: "simple" },
-];
+import { navData } from "./components/constants";
+import PanelInbound from "./components/PanelInbound";
+import PanelIcons from "./components/PanelIcons";
+import PanelCards from "./components/PanelCards";
+import PanelMegaRegions from "./components/PanelMegaRegions";
 
 /* -------------------- SMALL PARTS -------------------- */
 function PhonePill({ number = "1800 313 5555" }) {
@@ -268,7 +123,7 @@ function SearchBar() {
 }
 
 /* -------------------- PLACEHOLDER IMAGE BLOCK -------------------- */
-const ImgPlaceholder = ({ ratio = "16/9" }) => (
+export const ImgPlaceholder = ({ ratio = "16/9" }) => (
     <Box
         sx={{
             width: "100%",
@@ -279,252 +134,6 @@ const ImgPlaceholder = ({ ratio = "16/9" }) => (
         }}
     />
 );
-
-/* -------------------- MEGA PANELS -------------------- */
-
-// India/World
-function PanelMegaRegions({ item }) {
-    return (
-        <Paper elevation={6} sx={{ width: 1120, borderRadius: 1, overflow: "hidden" }}>
-            {/* Top links */}
-            {!!item.topLinks?.length && (
-                <Box
-                    sx={{
-                        px: 2,
-                        py: 1.25,
-                        borderBottom: "1px solid rgba(0,0,0,0.08)",
-                        bgcolor: "#fff",
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: 2,
-                        fontSize: 14,
-                    }}
-                >
-                    {item.topLinks.map((t) => (
-                        <Typography key={t} sx={{ fontWeight: 700, cursor: "pointer", "&:hover": { textDecoration: "underline" } }}>
-                            {t}
-                        </Typography>
-                    ))}
-                </Box>
-            )}
-
-            {/* Body */}
-            <Box sx={{ display: "grid", gridTemplateColumns: "300px 1fr", minHeight: 420, bgcolor: "#F6F9FF" }}>
-                {/* Left rail */}
-                <Box sx={{ bgcolor: "#fff", p: 2, borderRight: "1px solid rgba(0,0,0,0.08)" }}>
-                    {item.leftRail?.map((cat, i) => (
-                        <Box
-                            key={cat}
-                            sx={{
-                                px: 1.25,
-                                py: 1.25,
-                                borderRadius: 1,
-                                fontWeight: 700,
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                cursor: "pointer",
-                                ...(i === 0 && { bgcolor: "#F6F9FF" }),
-                                "&:hover": { bgcolor: "#F0F4FE" },
-                            }}
-                        >
-                            <span>{cat}</span>
-                            <ArrowForwardIosRoundedIcon sx={{ fontSize: 14, opacity: 0.6 }} />
-                        </Box>
-                    ))}
-                </Box>
-
-                {/* Right columns */}
-                <Box sx={{ p: 2, display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 2 }}>
-                    {item.columns?.map((col, idx) => (
-                        <Box key={idx}>
-                            <Typography sx={{ fontWeight: 800, mb: 1, fontSize: 14, borderBottom: "1px solid rgba(0,0,0,0.12)", pb: 0.75 }}>
-                                {col.heading}
-                            </Typography>
-                            {col.items?.map((it) => (
-                                <Typography
-                                    key={it}
-                                    sx={{ fontSize: 14, py: 0.5, cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
-                                >
-                                    {it}
-                                </Typography>
-                            ))}
-                        </Box>
-                    ))}
-                </Box>
-            </Box>
-        </Paper>
-    );
-}
-
-// Speciality Tours
-function PanelCards({ item }) {
-    return (
-        <Paper elevation={6} sx={{ width: 1120, borderRadius: 1, overflow: "hidden" }}>
-            {/* BESTSELLING */}
-            <Box sx={{ px: 2, py: 2, bgcolor: "#F6F9FF" }}>
-                <Typography sx={{ fontWeight: 800, mb: 1 }}>BESTSELLING TOURS</Typography>
-                <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 2 }}>
-                    {item.bestselling?.map((c) => (
-                        <Box key={c.title}>
-                            <ImgPlaceholder ratio="16/9" />
-                            <Typography sx={{ mt: 1, fontWeight: 700 }}>{c.title}</Typography>
-                            <Typography sx={{ fontSize: 13, textDecoration: "underline", cursor: "pointer" }}>
-                                {c.sub} →
-                            </Typography>
-                        </Box>
-                    ))}
-                </Box>
-            </Box>
-
-            {/* SOMETHING NEW */}
-            <Box sx={{ px: 2, py: 2, bgcolor: "#fff", borderTop: "1px solid rgba(0,0,0,0.08)" }}>
-                <Typography sx={{ fontWeight: 800, mb: 1 }}>SOMETHING NEW TO TRY</Typography>
-                <Box sx={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 2 }}>
-                    {item.somethingNew?.map((n) => (
-                        <Box key={n.title} sx={{ display: "flex", gap: 1, alignItems: "flex-start" }}>
-                            <Box sx={{ width: 28, height: 28, borderRadius: "50%", bgcolor: "#E6E9F2" }} />
-                            <Box>
-                                <Typography sx={{ fontWeight: 700 }}>{n.title}</Typography>
-                                <Typography sx={{ fontSize: 12, opacity: 0.7 }}>{n.sub}</Typography>
-                            </Box>
-                        </Box>
-                    ))}
-                </Box>
-            </Box>
-
-            {/* NEWLY LAUNCHED BAND */}
-            <Box
-                sx={{
-                    px: 2,
-                    py: 2,
-                    bgcolor: "linear-gradient(#FFF,#FFF)",
-                    borderTop: "1px solid rgba(0,0,0,0.08)",
-                    background: "linear-gradient(90deg, rgba(255,153,0,0.06), rgba(255,153,0,0))",
-                }}
-            >
-                <Chip label="Newly Launched" size="small" color="error" sx={{ mb: 1, color: "#fff" }} />
-                <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 2 }}>
-                    {item.newlyLaunched?.map((n) => (
-                        <Box key={n.title}>
-                            <Typography sx={{ fontWeight: 700 }}>{n.title}</Typography>
-                            <Typography sx={{ fontSize: 12, opacity: 0.7 }}>{n.sub}</Typography>
-                        </Box>
-                    ))}
-                </Box>
-            </Box>
-
-            {/* FOOTER LINKS */}
-            <Box sx={{ px: 2, py: 1.5, bgcolor: "#fff", borderTop: "1px solid rgba(0,0,0,0.08)", display: "flex", gap: 3 }}>
-                {item.footerLinks?.map((l) => (
-                    <Typography key={l} sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" } }}>
-                        {l}
-                    </Typography>
-                ))}
-            </Box>
-        </Paper>
-    );
-}
-
-// Customized Holidays
-function PanelIcons({ item }) {
-    return (
-        <Paper elevation={6} sx={{ width: 1120, borderRadius: 1, overflow: "hidden", p: 3 }}>
-            <Typography sx={{ fontWeight: 800, color: "#1A4BB8", mb: 2 }}>
-                🎉 THEMED EXPERIENCES <span style={{ fontWeight: 400 }}>- Find your reason!</span>
-            </Typography>
-
-            <Box sx={{ display: "grid", gridTemplateColumns: "460px 1fr", gap: 3 }}>
-                {/* Left icon list */}
-                <Box>
-                    {item.leftList?.map((row) => (
-                        <Box key={row.title} sx={{ display: "flex", alignItems: "center", gap: 1.5, py: 1.25 }}>
-                            <Box sx={{ width: 36, height: 36, borderRadius: "10px", bgcolor: "#E6E9F2" }} />
-                            <Typography sx={{ fontWeight: 700 }}>{row.title}</Typography>
-                            {row.badge && (
-                                <Chip label={row.badge} size="small" color="error" sx={{ ml: 1, color: "#fff" }} />
-                            )}
-                        </Box>
-                    ))}
-                </Box>
-
-                {/* Right image cards */}
-                <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 3 }}>
-                    {item.rightCards?.map((c) => (
-                        <Box key={c.title} sx={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 2, alignItems: "center" }}>
-                            <ImgPlaceholder ratio="16/9" />
-                            <Box>
-                                <Typography sx={{ fontWeight: 800 }}>
-                                    {c.title} <span style={{ textDecoration: "underline" }}>→</span>
-                                </Typography>
-                                <Typography sx={{ opacity: 0.8 }}>{c.sub}</Typography>
-                            </Box>
-                        </Box>
-                    ))}
-                </Box>
-            </Box>
-        </Paper>
-    );
-}
-
-// Inbound
-function PanelInbound({ item }) {
-    return (
-        <Paper elevation={6} sx={{ width: 1120, borderRadius: 1, overflow: "hidden" }}>
-            {/* Banner */}
-            <Box sx={{ px: 3, py: 2, bgcolor: "rgba(255,205,0,0.15)" }}>
-                <Typography>
-                    {item.banner.split(" Explore Now")[0]}{" "}
-                    <span style={{ textDecoration: "underline", fontWeight: 700 }}>Explore Now</span>
-                </Typography>
-            </Box>
-
-            <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0, p: 3 }}>
-                {/* Left cards 2x2 */}
-                <Box sx={{ pr: 3 }}>
-                    <Typography sx={{ fontWeight: 800, mb: 2 }}>India: A Timeless Experience</Typography>
-                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
-                        {item.leftCards?.map((c) => (
-                            <Box key={c.title}>
-                                <ImgPlaceholder ratio="16/10" />
-                                <Typography sx={{ mt: 1, fontWeight: 800 }}>{c.title}</Typography>
-                                <Typography sx={{ opacity: 0.7 }}>{c.sub}</Typography>
-                            </Box>
-                        ))}
-                    </Box>
-                </Box>
-
-                {/* Right lists with divider */}
-                <Box sx={{ pl: 3, display: "grid", gridTemplateColumns: "1fr 1fr", position: "relative" }}>
-                    <Box sx={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, bgcolor: "rgba(0,0,0,0.08)" }} />
-                    <Box sx={{ pr: 3 }}>
-                        <Typography sx={{ fontWeight: 800, mb: 2 }}>Explore Niche Experiences</Typography>
-                        {item.rightListA?.map((r) => (
-                            <Box key={r.title} sx={{ display: "grid", gridTemplateColumns: "52px 1fr", gap: 1.5, alignItems: "center", py: 1 }}>
-                                <Box sx={{ width: 52, height: 52, borderRadius: "50%", bgcolor: "#E6E9F2" }} />
-                                <Box>
-                                    <Typography sx={{ fontWeight: 800 }}>{r.title}</Typography>
-                                    <Typography sx={{ opacity: 0.7 }}>{r.sub}</Typography>
-                                </Box>
-                            </Box>
-                        ))}
-                    </Box>
-                    <Box sx={{ pl: 3 }}>
-                        {item.rightListB?.map((r) => (
-                            <Box key={r.title} sx={{ display: "grid", gridTemplateColumns: "52px 1fr", gap: 1.5, alignItems: "center", py: 1 }}>
-                                <Box sx={{ width: 52, height: 52, borderRadius: "50%", bgcolor: "#E6E9F2" }} />
-                                <Box>
-                                    <Typography sx={{ fontWeight: 800 }}>{r.title}</Typography>
-                                    <Typography sx={{ opacity: 0.7 }}>{r.sub}</Typography>
-                                </Box>
-                            </Box>
-                        ))}
-                    </Box>
-                </Box>
-            </Box>
-        </Paper>
-    );
-}
 
 /* -------------------- SECONDARY NAV ITEM -------------------- */
 function SecondaryNavItem({ item }) {
@@ -567,7 +176,7 @@ function SecondaryNavItem({ item }) {
     };
 
     return (
-        <Box onMouseEnter={handleEnter} onMouseLeave={handleLeave} sx={{ position: "relative" }}>
+        <Box onMouseEnter={handleEnter} onMouseLeave={handleLeave} sx={{ position: "relative", }}>
             {/* label */}
             <Box
                 ref={labelRef}
@@ -576,7 +185,7 @@ function SecondaryNavItem({ item }) {
                     alignItems: "center",
                     gap: 0.5,
                     px: 1.25,
-                    py: 1,
+                    // py: 1,
                     color: "#fff",
                     fontWeight: 700,
                     fontSize: 14,
@@ -627,12 +236,13 @@ function SecondaryNav() {
         <AppBar
             position="static"
             sx={{
-                backgroundColor: theme.palette.secondary.main,
+                backgroundColor: "#132738",
                 boxShadow: "none",
                 borderTop: "1px solid rgba(255,255,255,0.06)",
+                minHeight: 44
             }}
         >
-            <Toolbar disableGutters sx={{ mx: { md: 4 }, minHeight: 48, gap: 1 }}>
+            <Toolbar disableGutters sx={{ mx: { md: 4 }, gap: 1, display: "flex", justifyContent: "center", minHeight: 30 }}>
                 {navData.map((item) => (
                     <SecondaryNavItem key={item.title} item={item} />
                 ))}
@@ -655,7 +265,7 @@ export default function Navbar() {
     return (
         <>
             {/* === Main Navbar === */}
-            <AppBar position="sticky" sx={{ backgroundColor: theme.palette.primary.main, py: 1, boxShadow: "none" }}>
+            <AppBar position="sticky" sx={{ backgroundColor: theme.palette.primary.main, boxShadow: "none" }}>
                 {!isMobile ? (
                     <Toolbar disableGutters sx={{ display: "flex", alignItems: "center", gap: 2, px: { md: 4 } }}>
                         {/* Logo */}
