@@ -36,13 +36,13 @@ const Hero = () => {
                     }}
                 >
                     {/* Left Side - Hero Text and Search */}
-                    <Grid size={{ xs: 12, md: 8 }}>
+                    <Grid size={{ xs: 12, md: 7 }}>
                         <HeroContent />
                     </Grid>
 
                     {/* Right Side - Reviews */}
                     <Grid
-                        size={{ xs: 12, md: 4 }}
+                        size={{ xs: 12, md: 5 }}
                         sx={{
                             display: { xs: "none", md: "flex" },
                             justifyContent: "center",
