@@ -5,7 +5,7 @@ import HeroContent from "./components/HeroContent";
 import ReviewSlider from "./components/ReviewSlider";
 import StatsBar from "./components/StatsBar";
 
-const height = "80vh";
+const height = "100vh";
 
 const Hero = () => {
     return (
