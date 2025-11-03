@@ -22,7 +22,7 @@ const Hero = () => {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
-                    px: { xs: 3, md: 10 },
+                    px: { xs: 3, md: 5 },
                     overflow: "hidden",
                 }}
             >

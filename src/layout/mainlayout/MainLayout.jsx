@@ -15,7 +15,7 @@ export default function MainLayout() {
         sx={{
           position: "relative",
           zIndex: 0,
-          minHeight: "60vh",
+          // minHeight: "60vh",
         }}
       >
         <Outlet />

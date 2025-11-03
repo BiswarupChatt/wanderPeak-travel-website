@@ -7,7 +7,7 @@ import { useTypingEffect } from "../../../../../components/TypeWriterEffect";
 
 const HeroContent = () => {
     const destinations = ["Bhutan", "Meghalaya", "Cherrapunji", "Sikkim"];
-    const currentPlace = useTypingEffect(destinations); 
+    const currentPlace = useTypingEffect(destinations);
 
     return (
         <Box
@@ -17,7 +17,7 @@ const HeroContent = () => {
                 justifyContent: "center",
                 alignItems: { xs: "center", md: "center", lg: "flex-start" },
                 textAlign: { xs: "center", md: "left", lg: "left" },
-                px: { xs: 2, sm: 4, md: 6, lg: 10 },
+                pl: { xs: 2, sm: 4, md: 6, lg: 10 },
             }}
         >
             <Box sx={{ maxWidth: 700, width: "100%" }}>
